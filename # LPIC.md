@@ -4,6 +4,7 @@
 ```
     readlink /bin/sh
 ```
+    
 * Display the current shell on a Centos Distribution
 ```
     $ echo $SHELL
@@ -16,7 +17,7 @@
     uname -a
 ```
  ## Using a shell
- *For example with   ```echo``` comnand
+ * For example with ```echo``` comnand
  ```
     echo [Option]  [String] ....
  ```
@@ -191,4 +192,3 @@ Cấu trúc cây thư mục trong Linux
     $ 
     ```
 * Chương trình ```Hello.sh``` ở trong thư mục mà nó không nằm trong thư mục của biến môi trường ```PATH```. Do đó khi chạy chương trình trong shell prompt, tin nhắn hiện ra là ```command not found```.
-* Lệnh ```which``` sẽ hữu dụng trong những trường hợp như này, Nó 
