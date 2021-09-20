@@ -11,6 +11,9 @@ Mục lục
 - [Editing Text Files](#editing-text-files)
   - [Một số lệnh di chuyển](#một-số-lệnh-di-chuyển)
   - [Một số lệnh chỉnh sửa](#một-số-lệnh-chỉnh-sửa)
+  - [Lệnh vim trong chế độ Ex](#lệnh-vim-trong-chế-độ-ex)
+  - [Lưu thay đổi](#lưu-thay-đổi)
+- [Processing Text Using Filters](#processing-text-using-filters)
 ## Exploring Your Linux Shell Options
 * Check which shell the file is linked to
 ```
@@ -277,38 +280,59 @@ Vim có 3 chế độ
 ## Một số lệnh di chuyển
  
 
-|Shortkey   |Description   |
-|:---|:---|
-|h   |Di chuyển sang trái 1 ký tự   |   
-|l   |Di chuyển sang phải 1 ký tự  |  
-|j  |Di chuyển xuống dưới 1 dòng   |  
-|k   |Di chuyển lên trên 1 dòng   |  
-|w   |Di chuyển con trỏ về phía trước 1 từ trước từ tiếp theo   |  
-|e   |Di chuyển con trỏ về cuối từ hiện tại   |  
-|b   |Di chuyển con về phía sau 1 từ   |  
-|^   |Đưa con trỏ về đầu dòng   |  
-|$   |Đưa con trỏ về cuối dòng   |  
-|gg   |Đưa con trỏ về dòng đầu tiên của file   |  
-|G   |Di chuyển đến dòng cuối cùng của file   |  
-|*n*G   |Di chuyển đến dòng thứ n   |  
-|Ctrl+B   |Cuộn lên gần như cả 1 màn hình   |  
-|Ctrl+F   |Cuộn xuống gần như cả 1 màn hình   |  
-|Ctrl+U   |Cuộn lên nửa màn hình   |
-|Ctrl+D   |Cuộn xuống nửa màn hình   |
-|Ctrl+Y   |Cuộn lên 1 dòng   |
-|Ctrl+E   |Cuộn xuống 1 dòng   |
+| Shortkey | Description                                             |
+| :------- | :------------------------------------------------------ |
+| h        | Di chuyển sang trái 1 ký tự                             |
+| l        | Di chuyển sang phải 1 ký tự                             |
+| j        | Di chuyển xuống dưới 1 dòng                             |
+| k        | Di chuyển lên trên 1 dòng                               |
+| w        | Di chuyển con trỏ về phía trước 1 từ trước từ tiếp theo |
+| e        | Di chuyển con trỏ về cuối từ hiện tại                   |
+| b        | Di chuyển con về phía sau 1 từ                          |
+| ^        | Đưa con trỏ về đầu dòng                                 |
+| $        | Đưa con trỏ về cuối dòng                                |
+| gg       | Đưa con trỏ về dòng đầu tiên của file                   |
+| G        | Di chuyển đến dòng cuối cùng của file                   |
+| *n*G     | Di chuyển đến dòng thứ n                                |
+| Ctrl+B   | Cuộn lên gần như cả 1 màn hình                          |
+| Ctrl+F   | Cuộn xuống gần như cả 1 màn hình                        |
+| Ctrl+U   | Cuộn lên nửa màn hình                                   |
+| Ctrl+D   | Cuộn xuống nửa màn hình                                 |
+| Ctrl+Y   | Cuộn lên 1 dòng                                         |
+| Ctrl+E   | Cuộn xuống 1 dòng                                       |
 
 
 ## Một số lệnh chỉnh sửa
-|Shortkey   |Description   |
-|---|---|
-|qqq   |   |
-|   |   |
-|   |   |
-|   |   |
-|   |   |
-|   |   |
-|   |   |
-|   |   |
-|   |   |
-|   |   |
+| Shortkey | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| a        | Chỉnh sửa văn bản sau con trỏ                                   |
+| A        | Chèn văn bản vào cuối dòng văn bản                              |
+| dd       | Xóa dòng hiện tại                                               |
+| dw       | xóa từ hiện tại                                                 |
+| i        | Chèn văn bản trưỚc con trỏ                                      |
+| I        | Chèn văn bản vào đầu dòng văn bản                               |
+| o        | Mở 1 dòng văn bản bên dưới con trỏ và chuyển sang chế độ Insert |
+| O        | Mở 1 dòng văn bản bên trên con trỏ và chuyển sang chế độ Insert |
+| p        | Paste văn bản đã copy sau con trỏ                               |
+| P        | Paste văn bản đã copy trước con trỏ                             |
+| yw       | Sao chép từ hiện tại                                            |
+| yy       | Sao chép dòng hiện tại                                          |
+
+## Lệnh vim trong chế độ Ex
+|             |                                                                               |
+| ----------- | ----------------------------------------------------------------------------- |
+| :! command  | Khởi tạo shell command và hiển thị kết quả, nhưng không thoát trình soạn thảo |
+| :r! command | Khởi tạo shell command và đưa kết quả vào vùng đệm của trình soạn thảo        |
+| :r file     | Đọc tiêu đề file và đưa vào vùng đệm của trình soạn thảo                      |
+## Lưu thay đổi
+| Mode    |      |                                                                        |
+| ------- | ---- | ---------------------------------------------------------------------- |
+| Ex      | :x   | Ghi bộ đệm vào tệp và thoát trình soạn thảo                            |
+| Ex      | :wq  | Ghi bộ đệm vào tệp và thoát trình soạn thảo                            |
+| Ex      | :wq! | Ghi bộ đệm vào tệp và thoát trình soạn thảo(overrides protection)      |
+| Ex      | :w   | Ghi bộ đệm vào tệp và ở lại trong trình soạn thảo                      |
+| Ex      | :w!  | Ghi bộ đệm vào tệp và ở lại trong editor(override protection) |
+| Ex      | :q   | Thoát editor nhưng không ghi bộ đệm vào tệp                            |
+| Ex      | :q!  | Thoát editor nhưng không ghi bộ đệm vào tệp(overrides protection)      |
+| Command | ZZ   | Ghi bộ đệm vào tệp và thoát editor                                     |
+# Processing Text Using Filters
