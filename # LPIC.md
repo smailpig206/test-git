@@ -1,4 +1,16 @@
 # LPIC
+Mục lục
+- [LPIC](#lpic)
+  - [Exploring Your Linux Shell Options](#exploring-your-linux-shell-options)
+  - [Using a shell](#using-a-shell)
+  - [Các siêu kí tự trích dẫn](#các-siêu-kí-tự-trích-dẫn)
+  - [Khám phá cấu trúc thư mục](#khám-phá-cấu-trúc-thư-mục)
+  - [Tìm hiểu lệnh](#tìm-hiểu-lệnh)
+  - [Sử dụng biến môi trường(Environment Variables)](#sử-dụng-biến-môi-trườngenvironment-variables)
+  - [Geting help](#geting-help)
+- [Editing Text Files](#editing-text-files)
+  - [Một số lệnh di chuyển](#một-số-lệnh-di-chuyển)
+  - [Một số lệnh chỉnh sửa](#một-số-lệnh-chỉnh-sửa)
 ## Exploring Your Linux Shell Options
 * Check which shell the file is linked to
 ```
@@ -17,7 +29,7 @@
     uname -a
 ```
  ## Using a shell
- * For example with ```echo``` comnand
+ * For example with `echo` comnand
  ```
     echo [Option]  [String] ....
  ```
@@ -26,7 +38,7 @@
  ```
     * ? [ ] ' " \ $ ; & ( ) | ^ < >
  ```
- * Ví dụ , kí tự ```$``` biểu thị rằng kí tự này đi cùng với 1 tên biến. Sử dụng lệnh ```echo```, chương trình sẽ cố gắng chạy và hiện thị giá trị của biến.
+ * Ví dụ , kí tự `$` biểu thị rằng kí tự này đi cùng với 1 tên biến. Sử dụng lệnh `echo`, chương trình sẽ cố gắng chạy và hiện thị giá trị của biến.
 ```
     $ echo $SHELL
     /bin/bash
@@ -191,4 +203,112 @@ Cấu trúc cây thư mục trong Linux
     bash: Hello.sh: command not found…
     $ 
     ```
-* Chương trình ```Hello.sh``` ở trong thư mục mà nó không nằm trong thư mục của biến môi trường ```PATH```. Do đó khi chạy chương trình trong shell prompt, tin nhắn hiện ra là ```command not found```.
+Chương trình `Hello.sh` ở trong thư mục mà nó không nằm trong thư mục của biến môi trường `PATH`. Do đó khi chạy chương trình trong shell prompt, tin nhắn hiện ra là `command not found`.
+Lệnh `which` sẽ hữu dụng trong những trường hợp này.Nó thông qua các thư mục của PATH để tìm chương trình
+```
+$ which Hello.sh
+```
+![hello.sh](https://i.imgur.com/Tw1EGWo.png)
+```
+$ which echo
+usr/bin/echo
+
+```
+Sử dụng các đường dẫn khác nhau để chạy command
+```
+$ echo Hello World
+Hello World
+$
+$ /usr/bin/echo Hello World
+Hello World
+$
+```
+## Geting help
+Hệ thống Linux cung cấp 1 chuyên trang gọi là `man pages`. Man pages cung cấp tài liệu về mục đích của lệnh, các tùy chọn, cú pháp ...
+Ta có thể tìm từ khóa trong tài liệu bằng option `-k`
+```
+$ man -k passwd
+chgpasswd (8)        - update group passwords in batch mode
+chpasswd (8)         - update passwords in batch mode
+gpasswd (1)          - administer /etc/group and /etc/gshadow
+grub2-mkpasswd-pbkdf2 (1) - Generate a PBKDF2 password hash.
+lpasswd (1)          - Change group or user password
+pam_localuser (8)    - require users to be listed in /etc/passwd
+passwd (1)           - update user's authentication tokens
+sslpasswd (1ssl)     - compute password hashes
+pwhistory_helper (8) - Helper binary that transfers password hashes from passwd or sha...
+
+```
+Lệnh `history` giúp user tìm lại các câu lệnh bạn đã dùng. 
+```
+$ history
+77  man passwd
+78  man -k passed
+79  man -k passwd
+80  man -s 5 passed
+81  man -s 5 passwd
+82  man  5 passwd
+83  man  8  passwd
+84  man  1 passwd
+85  history
+
+```
+Chạy lại command cũ  trong lịch sử command
+```
+$ !85
+77  man passwd
+78  man -k passed
+79  man -k passwd
+80  man -s 5 passed
+81  man -s 5 passwd
+82  man  5 passwd
+83  man  8  passwd
+84  man  1 passwd
+85  history
+```
+Chúng ta có thể nhập `!!` để chạy lại command gần nhất.
+
+# Editing Text Files
+Vim có 3 chế độ
+    * `Command Mode`: Là chế độ khi lần đầu vào vùng đệm. Tại đây bạn nhập các tổ hợp phím để thực hiện lệnh.
+    * `Insert Mode`: Hay còn gọi là edit hay entry mode. Ấn phím I để khởi chạy `Insert mode`.
+    * `Ex Mode `: Là chế độ mà bất kì lệnh nào đều được bắt đầu với dấu `:`.
+##
+## Một số lệnh di chuyển
+ 
+
+|Shortkey   |Description   |
+|:---|:---|
+|h   |Di chuyển sang trái 1 ký tự   |   
+|l   |Di chuyển sang phải 1 ký tự  |  
+|j  |Di chuyển xuống dưới 1 dòng   |  
+|k   |Di chuyển lên trên 1 dòng   |  
+|w   |Di chuyển con trỏ về phía trước 1 từ trước từ tiếp theo   |  
+|e   |Di chuyển con trỏ về cuối từ hiện tại   |  
+|b   |Di chuyển con về phía sau 1 từ   |  
+|^   |Đưa con trỏ về đầu dòng   |  
+|$   |Đưa con trỏ về cuối dòng   |  
+|gg   |Đưa con trỏ về dòng đầu tiên của file   |  
+|G   |Di chuyển đến dòng cuối cùng của file   |  
+|*n*G   |Di chuyển đến dòng thứ n   |  
+|Ctrl+B   |Cuộn lên gần như cả 1 màn hình   |  
+|Ctrl+F   |Cuộn xuống gần như cả 1 màn hình   |  
+|Ctrl+U   |Cuộn lên nửa màn hình   |
+|Ctrl+D   |Cuộn xuống nửa màn hình   |
+|Ctrl+Y   |Cuộn lên 1 dòng   |
+|Ctrl+E   |Cuộn xuống 1 dòng   |
+
+
+## Một số lệnh chỉnh sửa
+|Shortkey   |Description   |
+|---|---|
+|qqq   |   |
+|   |   |
+|   |   |
+|   |   |
+|   |   |
+|   |   |
+|   |   |
+|   |   |
+|   |   |
+|   |   |
