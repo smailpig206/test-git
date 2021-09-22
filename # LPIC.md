@@ -14,6 +14,33 @@ Mục lục
   - [Lệnh vim trong chế độ Ex](#lệnh-vim-trong-chế-độ-ex)
   - [Lưu thay đổi](#lưu-thay-đổi)
 - [Processing Text Using Filters](#processing-text-using-filters)
+  - [File-Combining Commands](#file-combining-commands)
+  - [File-Transforming Commands](#file-transforming-commands)
+  - [Phân tách với `split`](#phân-tách-với-split)
+  - [File-Formatting Commands](#file-formatting-commands)
+    - [Organizing with `sort`](#organizing-with-sort)
+  - [File-Viewing Commands](#file-viewing-commands)
+    - [Using `more` and `less`](#using-more-and-less)
+    - [Looking at files with `head`](#looking-at-files-with-head)
+    - [Viewing Files with tail](#viewing-files-with-tail)
+  - [File-Summarizing Commands](#file-summarizing-commands)
+    - [Counting with `wc`](#counting-with-wc)
+    - [Pulling Out Portions with  `cut`](#pulling-out-portions-with--cut)
+    - [Discovering Repeated Lines with `uniq`](#discovering-repeated-lines-with-uniq)
+    - [Digesting an MD5 Algorithm](#digesting-an-md5-algorithm)
+    - [Securing Hash Algorithms](#securing-hash-algorithms)
+- [Using Regular Expressions](#using-regular-expressions)
+  - [Using `grep`](#using-grep)
+  - [Understanding Basic Regular Expressions](#understanding-basic-regular-expressions)
+  - [Understanding Extended Regular Expressions](#understanding-extended-regular-expressions)
+- [Using Streams, Redirection, and Pipes](#using-streams-redirection-and-pipes)
+  - [Redirecting Input and Output](#redirecting-input-and-output)
+    - [Handling Standard Input](#handling-standard-input)
+    - [Redirecting Standard Error](#redirecting-standard-error)
+    - [Regular Standard Input](#regular-standard-input)
+  - [Piping Data between Programs](#piping-data-between-programs)
+    - [Using `sed`](#using-sed)
+    - [Generating Command Line](#generating-command-line)
 ## Exploring Your Linux Shell Options
 * Check which shell the file is linked to
 ```
@@ -336,3 +363,466 @@ Vim có 3 chế độ
 | Ex      | :q!  | Thoát editor nhưng không ghi bộ đệm vào tệp(overrides protection)      |
 | Command | ZZ   | Ghi bộ đệm vào tệp và thoát editor                                     |
 # Processing Text Using Filters
+## File-Combining Commands
+Lệnh `cat` dùng để đọc các file văn bản nhỏ.
+Syntax
+```
+cat [OPTION]... [FILE]...
+```
+```
+[root@hoanganh fuming]# cat hello.sh
+ hello
+```
+Ghép nhiều file bằng `cat `
+```
+[root@hoanganh fuming]# cat number.txt random.txt
+1
+3
+5
+8
+99
+
+0.000
+hello
+VietNam
+0101000111
+```
+Lệnh `paste` giúp hiện thị hai file cạnh nhau (side-to-side)
+```
+[root@hoanganh fuming]# paste number.txt random.txt
+1       0.000
+3       hello
+5       VietNam
+8       0101000111
+99
+```
+## File-Transforming Commands
+Lệnh `od` giúp hiện thị văn bản dưới dạng octal(base8), hexadecimal(base16),decimal(base10), and ASCII.
+Syntax:
+```
+od [OPTION]...[FILE]...
+```
+Ta sẽ thử lệnh `od` để chuyển file về dạng octal
+```
+[root@hoanganh fuming]# vim testod.txt
+[root@hoanganh fuming]# cat testod.txt
+Test od command
+[root@hoanganh fuming]# od testod.txt
+0000000 062524 072163 067440 020144 067543 066555 067141 005144
+0000020
+```
+Dùng `-cb` để biết thêm thông tin
+```
+[root@hoanganh fuming]# od -cd testod.txt
+0000000   T   e   s   t       o   d       c   o   m   m   a   n   d  \n
+          25940   29811   28448    8292   28515   28013   28257    2660
+0000020
+
+```
+## Phân tách với `split`
+Lệnh `split` giúp chia file lớn thành các phần nhỏ hơn.
+Syntax:
+```
+split [OPTION]...[FILE]...
+```
+Dùng option `-l` để chia file bằng số dòng nhất định
+```
+[root@hoanganh fuming]# cat number.txt
+1
+3
+5
+8
+99
+
+[root@hoanganh fuming]# split -l 2 number.txt testsplit
+[root@hoanganh fuming]# ls -l
+total 28
+-rw-r--r--. 1 root root  7 Sep 20 10:27 hello.sh
+-rw-r--r--. 1 root root 12 Sep 20 17:39 number.txt
+-rw-r--r--. 1 root root 31 Sep 20 17:40 random.txt
+-rw-r--r--. 1 root root 16 Sep 20 17:53 testod.txt
+-rw-r--r--. 1 root root  4 Sep 21 09:18 testsplitaa
+-rw-r--r--. 1 root root  4 Sep 21 09:18 testsplitab
+-rw-r--r--. 1 root root  4 Sep 21 09:18 testsplitac
+[root@hoanganh fuming]# cat testsplitaa
+1
+3
+[root@hoanganh fuming]# cat testsplitab
+5
+8
+[root@hoanganh fuming]# cat testsplitac
+99
+
+[root@hoanganh fuming]#
+
+```
+## File-Formatting Commands
+### Organizing with `sort`
+Lệnh `sort` là công cụ để sắp xếp dữ liệu trong file
+Ví dụ
+```
+[root@hoanganh fuming]# cat sorttest.txt
+66
+17
+07
+98
+52
+[root@hoanganh fuming]# sort sorttest.txt
+07
+17
+52
+66
+98
+[root@hoanganh fuming]# sort -n sorttest.txt
+07
+17
+52
+66
+98
+```
+Đếm số dòng trong file bằng lệnh `nl`
+```
+[root@hoanganh fuming]# nl sorttest.txt
+     1  45
+     2  66
+     3  17
+     4  07
+     5  98
+     6  52
+     7  36
+```
+* Thêm option `-ba` để đến tất cả các dòng  
+    ```
+    [root@hoanganh fuming]# nl -ba sorttest.txt
+     1  45
+     2  66
+     3  17
+     4  07
+     5  98
+     6  52
+     7  36
+     8
+    ```
+## File-Viewing Commands
+### Using `more` and `less`
+Hai lệnh `more` và `less` cho phép người dùng xem văn bản theo tốc độ cuộn tùy chọn.
+Syntax:
+```
+more [OPTION]... [FILE]...
+```
+```
+less [OPTION]... [FILE]...
+```
+### Looking at files with `head`
+Syntax:
+```
+head [OPTION]... [FILE]...
+```
+Ví dụ:
+```
+[root@hoanganh ~]# head /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+```
+Lệnh này mặc định sẽ cho bạn chỉ được đọc 10 dòng đầu tiên của file. Thêm option `-n` (hoặc `--lines=`) để chọn số dòng muốn hiển thị.
+```
+[root@hoanganh ~]# head -n 11 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+```
+### Viewing Files with tail
+Trái ngược với `head`, lệnh `tail` sẽ cho bạn xem những dòng cuối của file. Cũng tương tự như `head`, thêm option `-n` để chọn số dòng muốn hiện.
+Bên cạnh đó, option `-f` sẽ cho thấy những mục đã nhập vào tệp gần đây nhất
+```
+$ sudo tail -f /var/log/auth.log
+[sudo] password for Christine:
+Aug 27 10:15:14 Ubuntu1804 sshd[15662]: Accepted password […]
+Aug 27 10:15:14 Ubuntu1804 sshd[15662]: pam_unix(sshd:sess[…]
+Aug 27 10:15:14 Ubuntu1804 systemd-logind[588]: New sessio[…]
+Aug 27 10:15:50 Ubuntu1804 sudo: Christine : TTY=pts/1 ; P[…]
+Aug 27 10:15:50 Ubuntu1804 sudo: pam_unix(sudo:session): s[…]
+Aug 27 10:16:21 Ubuntu1804 login[10703]: pam_unix(login:se[…]
+Aug 27 10:16:21 Ubuntu1804 systemd-logind[588]: Removed se[…]
+^C
+$
+```
+## File-Summarizing Commands
+### Counting with `wc`
+```
+wc [OPTION]... [FILE]...
+```
+Khi không chọn option nào, lệnh `wc` sẽ hiện ra số dòng, số từ và số byte.
+```
+[root@hoanganh fuming]# cat random.txt
+0.000
+hello
+VietNam
+0101000111
+[root@hoanganh fuming]# wc random.txt
+ 4  4 31 random.txt
+```
+### Pulling Out Portions with  `cut`
+```
+cut OPTION... [FILE]...
+```
+Lệnh `cut` giúp chúng ta có thể hiện ra đoạn thông tin mình cần một cách chính xác
+```
+$ head -2 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+$
+$ cut -d ":" -f 1,7 /etc/passwd
+root:/bin/bash
+bin:/sbin/nologin
+[…]
+$
+```
+### Discovering Repeated Lines with `uniq`
+Hiện thông tin trùng lặp với lệnh `uniq`
+```
+$ cat NonUniqueLines.txt
+A
+C
+C
+A$
+$ uniq NonUniqueLines.txt
+A C A $
+```
+### Digesting an MD5 Algorithm
+Kiểm tra tính toàn vẹn với `md5sum`
+```
+[root@hoanganh fuming]# md5sum random.txt
+113925936287b254a0e854deb4632ce0  random.txt
+```
+### Securing Hash Algorithms
+
+SHA(hàm băm) được sử dụng để kiểm tra tính toàn vẹn(integrity) khi chúng được copy hay di chuyển sang vị trí khác
+Kiểm tra tên công cụ SHA
+```
+[root@hoanganh fuming]# ls -l /usr/bin/sha???sum
+-rwxr-xr-x. 1 root root 41608 Nov 17  2020 /usr/bin/sha224sum
+-rwxr-xr-x. 1 root root 41608 Nov 17  2020 /usr/bin/sha256sum
+-rwxr-xr-x. 1 root root 41624 Nov 17  2020 /usr/bin/sha384sum
+-rwxr-xr-x. 1 root root 41624 Nov 17  2020 /usr/bin/sha512sum
+```
+Thử với `sha256` và `sha512`
+```
+[root@hoanganh fuming]# sha256sum random.txt
+5a080d1126cc91a8015d13e846d12d3f130c28e952dcc1dda732faaacb23bb51  random.txt
+[root@hoanganh fuming]# sha512sum random.txt
+56d6742be977e77849e3e425371748b704547838b83cf42056259715fd5881ab3c7921d656a2fe1483f168eb5023975f38207e6187af82231a64e4361b768313  random.txt
+```
+# Using Regular Expressions
+## Using `grep`
+Lệnh `grep` rất mạnh mẽ khi nó dùng    `regular expressions`. Điều này giúp lọc các tệp văn bản.
+Syntax
+```
+grep [OPTION] PATTERN [FILE...]
+```
+For example:
+```
+[root@hoanganh fuming]# grep VietNam random.txt
+VietNam
+```
+Dùng thêm option `-f` để tìm các mẫu được lưu trong tệp văn bản
+```
+$ cat accounts.txt
+sshd
+Christine
+nfsnobody
+$
+$ fgrep -f accounts.txt /etc/passwd
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+Christine:x:1001:1001::/home/Christine:/bin/bash
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+$
+$ grep -F -f accounts.txt /etc/passwd
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+Christine:x:1001:1001::/home/Christine:/bin/bash
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+$
+```
+## Understanding Basic Regular Expressions
+Basic regular expressions (BREs) include characters, such as a dot followed by an asterisk(.*) to represent multiple characters ...
+```
+$ grep daemon.*nologin /etc/passwd
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+[…]
+daemon:/dev/null:/sbin/nologin
+[…]
+$
+```
+Kí tự `^` cho đầu ra luôn bắt đầu vs pattern
+```
+$ grep ^root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+$
+```
+Ngược lại kí tự `-v` cha đầu ra không bao gồm pattern.
+Ta có thể dùng lớp kí tự để tìm dữ liệu
+```
+$ cat random.txt
+42
+Flat Land
+Schrodinger's Cat
+0010 1010
+0000 0010
+$
+$ grep [[:digit:]] random.txt
+42
+0010 1010
+0000 0010
+$
+```
+## Understanding Extended Regular Expressions
+Extend Regular Expressions(EREs) cho nhiều mẫu phức tạp hơn.
+For example:
+```
+$ grep -E "^root|^dbus" /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+dbus:x:81:81:System message bus:/:/sbin/nologin
+$
+$
+egrep "(daemon|s).*nologin" /etc/passwd
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+[…]
+$
+```
+Có thể thấy kí tự `|` cho đầu ra là một trong 2 mẫu đưa vào. Và `egrep` bằng với `grep -E`
+# Using Streams, Redirection, and Pipes
+## Redirecting Input and Output
+### Handling Standard Input
+Lệnh `echo` cho đầu ra văn bản theo STDOUT
+```
+[root@hoanganh ~]# echo "Hello World"
+Hello World
+```
+STDOUT cho phép bạn chuyển hướng đầu ra bằng toán tử chuyển hướng
+```
+$ grep nologin$ /etc/passwd
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+[…]
+$ grep nologin$ /etc/passwd > NologinAccts.txt
+$
+$ less NologinAccts.txt
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+[…]
+$
+```
+Để thêm dữ liệu vào tệp có sẵn, ta dùng toán tử `>>`. Nếu tệp chưa tồn tại, nó tự tạo và thêm đầu ra của lệnh vào tệp.
+```
+$ echo "Nov 16, 2019" > AccountAudit.txt
+$
+$ wc -l /etc/passwd >> AccountAudit.txt
+$
+$ cat AccountAudit.txt
+Nov 16, 2019
+44 /etc/passwd
+$
+```
+### Redirecting Standard Error
+Standard Error(STDERR), giống như STDOUT, mặc định gửI đến thiết bị đầu cuối của bạn. Ta có thể dùng toán tử `2>` hoặc `2>>` nếu file đã tồn tại.
+```
+[root@hoanganh fuming]# ./random.txt 2>> err.txt
+[root@hoanganh fuming]# cat err.txt
+-bash: ./random.txt: Permission denied
+```
+### Regular Standard Input
+Giống như STDOUT và STDERR, ta có thể chuyển hướng STDIN. Dùng toán tử `<` và lệnh `tr` để thực hiện
+```
+[root@hoanganh fuming]# cat diem.txt
+15 20 30 45 66 77 85 96
+[root@hoanganh fuming]# tr " " "," < diem.txt
+15,20,30,45,66,77,85,96
+```
+## Piping Data between Programs
+Với pipe(`|`), đầu ra của lệnh trước sẽ là đầu vào của lệnh tiếp theo.
+Syntax:
+```
+Command1 | Command2 | Command3 ...
+```
+Ví dụ:
+```
+[root@hoanganh fuming]# grep /bin/bash$ /etc/passwd | wc -l
+2
+```
+Lệnh `tee` cho phép giữ đầu ra trong 1 file và hiện thị với STDOUT
+```
+$ grep /bin/bash$ /etc/passwd | tee BashUsers.txt
+root:x:0:0:root:/root:/bin/bash
+user1:x:1000:1000:Student User One:/home/user1:/bin/bash
+Christine:x:1001:1001::/home/Christine:/bin/bash
+$
+$ cat BashUsers.txt
+root:x:0:0:root:/root:/bin/bash
+user1:x:1000:1000:Student User One:/home/user1:/bin/bash
+Christine:x:1001:1001::/home/Christine:/bin/bash
+$
+```
+### Using `sed`
+`sed` là một công cụ tuyệt vời giúp người đọc chỉnh sửa nội dung file
+Syntax
+```
+sed [OPTIONS] [SCRIPT]… [FILENAME]
+```
+Ví dụ
+```
+$ echo "I like cake." | sed 's/cake/donuts/'
+I like donuts.
+$
+```
+Thêm `-g` để thay thế hoàn toàn pattern
+```
+$ echo "I love cake and more cake." | sed 's/cake/donuts/'
+I love donuts and more cake.
+$
+$ echo "I love cake and more cake." | sed 's/cake/donuts/g'
+I love donuts and more donuts.
+$
+```
+Ngoài ra chúng ta có thể xóa 1 từ trong file
+```
+[root@hoanganh fuming]# cat random.txt
+0.000
+hello
+VietNam
+0101000111
+Hello
+[root@hoanganh fuming]# sed '/Hello/d' random.txt
+0.000
+hello
+VietNam
+0101000111
+```
+`sed` cũng có thể thêm 1 dòng mới tương tự `echo`.
+### Generating Command Line
+```
+$ touch EmptyFile1.txt EmptyFile2.txt EmptyFile3.txt
+$
+$ ls EmptyFile?.txt
+EmptyFile1.txt EmptyFile2.txt EmptyFile3.txt
+$
+$ ls -1 EmptyFile?.txt | xargs -p /usr/bin/rm
+/usr/bin/rm EmptyFile1.txt EmptyFile2.txt EmptyFile3.txt ?...n
+$
+```
