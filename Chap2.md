@@ -26,10 +26,14 @@ Mục lục
     - [Library	Management	Commands](#librarymanagementcommands)
   - [Managing	Processes](#managingprocesses)
     - [Examining	Process	Lists](#examiningprocesslists)
+      - [Viewing Process with `ps`](#viewing-process-with-ps)
+      - [Selecting Process with `ps`](#selecting-process-with-ps)
+      - [Viewing Process with `top`](#viewing-process-with-top)
     - [Employing	Multiple	Screens](#employingmultiplescreens)
+      - [Multiplexing with `tmux`](#multiplexing-with-tmux)
     - [Understanding	Foreground	and Background	Processes](#understandingforegroundand-backgroundprocesses)
-    - [Managing	Process	Priorities](#managingprocesspriorities)
-    - [Sending	Signals	to	Processes](#sendingsignalstoprocesses)
+      - [Sending  a Job to the Background](#sending--a-job-to-the-background)
+    - [Stopping a Job](#stopping-a-job)
 ## Looking	at	Package	Concepts 
 Có 2 trình quản lý package hay dùng
 * Red Hat package management(RPM)
@@ -65,14 +69,14 @@ package docker is not installed
 ```
 ### The	`rpm` Command Set 
 Một số option hay dùng
-| Short | Long | Description |
-| ----- | ---- | ----------- |
-| -e    |--erase| xóa bỏ phần mềm được chỉ định         |
-| -F    |--freshen      |Cập nhật nếu phiên bản mới nhất đã có             |
-| -i    |--install      |Cài đặt gói tin được chỉ định             |
-| -q    |--query      |Truy vấn gói tin được chỉ định có được cài đặt hay không             |
-| -U    |--upgrade      |Cài đặt hoặc cập nhật gói tin được chỉ định             |
-| -v    |--verify      |xác định tính tồn tại và tính toàn vẹn của gói tin           |
+| Short | Long      | Description                                              |
+| ----- | --------- | -------------------------------------------------------- |
+| -e    | --erase   | xóa bỏ phần mềm được chỉ định                            |
+| -F    | --freshen | Cập nhật nếu phiên bản mới nhất đã có                    |
+| -i    | --install | Cài đặt gói tin được chỉ định                            |
+| -q    | --query   | Truy vấn gói tin được chỉ định có được cài đặt hay không |
+| -U    | --upgrade | Cài đặt hoặc cập nhật gói tin được chỉ định              |
+| -v    | --verify  | xác định tính tồn tại và tính toàn vẹn của gói tin       |
 #### Installing and Updating RPM Packages
 Option `-vh` sẽ hiển thị quá trình update và cái gì đang chạy
 
@@ -149,14 +153,112 @@ Xem các tệp kho lưu trữ trong /etc/yum.repos.d/
 CentOS-Base.repo  CentOS-Debuginfo.repo  CentOS-Media.repo    CentOS-Vault.repo
 CentOS-CR.repo    CentOS-fasttrack.repo  CentOS-Sources.repo  CentOS-x86_64-kernel.repo
 ```
+Update
+* Kiểm tra cập nhật các ứng dụng đã cài đặt
+  ```
+  yum check-update
+  ```
+* Cập nhật các ứng dụng đã cài
+    ```
+    yum update
+    ```
+    Hoặc với 1 package cụ thể
+    ```
+    yum update [package]
+    ```
+Install
+* `-y` cho phép đồng ý với tất cả yêu cầu
+  ```
+  yum -y install [package]
+  ```
+Remove
+  * Xóa gói chỉ định
+  ```
+  yum remove [package]
+  ```
+Info
+  * Xem thông tin
+  ```
+  yum info [package]
+  ```
 ### Using	ZYpp 
-## Using	Debian	Packages 
+Bản phân phối `openSUSE` cũng sử dụng hệ thống quản lý gói RPM và phân phối dưới dạng tệp `.rpm` nhưng không sử dụng công cụ `yum` hay `dnf`. Thay vào đó họ sử dụng `ZYpp`. Nhìn chung câu lệnh khá giống với `yum`.
+
+## Using	Debian	Packages
 ### Debian	Package	File	Conventions 
-### The	`dpkg`	Command	Set 
+Debian đóng gói các file phần mềm dưới dạng `.deb`, thường được sử dụng trên các bản phân phối Linux dựa trên Debian, ví dụ như Ubuntu
+ ```
+ PACKAGE-NAME-VERSION-RELEASE_ARCHITETURE.deb
+ ```
+### The	`dpkg`	Command	Set
+ Syntax:
+ ```
+ dpkg [OPTIONS] ACTION PACKAGE-FILE 
+ ```
+ Cài đặt gói `.deb` với tham số `-i`
+ ```
+Selecting previously unselected package zsh.
+(Reading database ... 171250 files and directories currently installed.)90 Chapter 
+Preparing to unpack zsh_5.4.2-3ubuntu3.1_amd64.deb ...
+Unpacking zsh (5.4.2-3ubuntu3.1) ...
+
+ ```
+ Tham số `-l` để hiện các gói đã cài đặt
+ ```
+ $ dpkg -l
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig
+|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)
+||/ Name Version Architecture Description
++++-==============-============-============-===========================
+ii accountsservic 0.6.45-1ubun amd64 query and manipulate accounts
+ii acl 2.2.52-3buil amd64 Access control list utilities
+ii acpi-support 0.142 amd64 scripts for handling ACPI
+ii acpid 1:2.0.28-1ub amd64 Advanced Config and Power
+ii adduser 3.116ubuntu1 all add and remove users
+[…]
+iU zsh 5.4.2-3ubunt amd64 shell with lots of features
+$
+ ```
 ### Looking	at	the	APT	Suite 
 ### Using	`apt-cache `
+Tìm gói đã được cài với `apt-cache pkgnames`
+```
+$ apt-cache pkgnames | grep ^nano
+nano
+[…]
+nano-tiny
+[…]
+$
+```
+Hiển thị thông tin của gói
+```
+$ apt-cache showpkg zsh
+Package: zsh
+Versions:
+5.4.2-3ubuntu3.1 […]
+[…]
+```
 ### Using	`apt-get `
-### Reconfiguring	Packages 
+Tương tự như `yum`, `apt-get` được sử dụng để cài đặt, cập nhật và xóa các gói từ 1 kho lưu trữ gói Debian.
+Cài đặt 1 gói với lệnh `apt-get install`
+```
+$ sudo apt-get install zsh
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following additional packages will be installed:
+zsh-common
+...
+```
+### Reconfiguring	Packages
+Hiển thị cấu hình gói cài đặt
+ ```
+ $ sudo debconf-show cups
+* cupsys/backend: lpd, socket, usb, snmp, dnssd
+* cupsys/raw-print: true
+$
+ ```
 ## Managing	Shared	Libraries 
 ### Library	Principles 
 ### Locating	Library	Files 
@@ -164,7 +266,59 @@ CentOS-CR.repo    CentOS-fasttrack.repo  CentOS-Sources.repo  CentOS-x86_64-kern
 ### Library	Management	Commands 
 ## Managing	Processes 
 ### Examining	Process	Lists 
+Khi hệ thống Linux bắt đầu chạy, nó sẽ khởi động 1 process đặc biệt gọi là `init process`. `init` là nhân của hệ thống Linux, nó sẽ chạy tập lệnh khởi động tất cả các quá trình khác.
+#### Viewing Process with `ps`
+`ps` command
+![pscommand](https://i.imgur.com/G3DeGa7.png)
+Xem các chương trình đang chạy với Unix-style 
+![ps -ef](https://i.imgur.com/fHRxCmG.png)
+* UID: Người dùng đang chạy tiến trình
+* PID: ID của tiến trình
+* PPID: ID của tiến trình mẹ nếu nó được sinh ra từ tiến trình khác
+* C : Việc sử dụng bộ xử lý trong suốt thời gian tồn tại của quá trình
+* STIME: Thời gian hệ thống bắt đầu tiến trình
+* TTY: Thiết bị đầu cuối mà từ đó tiến trình được bắt đầu
+* TIME: Thời gian chuẩn bị cpu cần thiết để chạy tiến trình
+* CMD: Tên chương trình bắt đầu tiến trình này
+#### Selecting Process with `ps`
+```
+[hoanganh@localhost ~]$ ps -u hoanganh
+   PID TTY          TIME CMD
+  2042 ?        00:00:00 sshd
+  2043 pts/0    00:00:00 bash
+  2062 ?        00:00:00 sshd
+  2067 ?        00:00:00 sftp-server
+  2220 pts/0    00:00:00 ps
+[hoanganh@localhost ~]$
+```
+#### Viewing Process with `top`
+`top` sẽ giải quyết một số vấn đề mà `ps` không hỗ trợ, chẳng hạn bạn cố gắng tìm quá trình nào đó thường xuyên hoán đổi trong và ngoài bộ nhớ.`top` cập nhật theo thời gian thức(real-time)
+![top1](https://i.imgur.com/pkomC3Y.png)
+Khu vực đầu tiên của `top` hiển thị các thông tin cơ bản của hệ thống. DÒng đầu tiên show thời gian hiện tại, thời gian hệ thống đã hoạt động, số ượng user đã đăng nhập và thời gian load trung bình của hế thống
+Khu thứ 2 hiển thị chi tiết trạng thái bộ nhớ hệ thống: trạng thái, tổng , đang dùng hiện tại, trống bao nhiêu ....
+Khu tiếp theo của công cụ `top` hiển thị chi tiết danh sách các chương trình hiện tại đang chạy
+* PID: ID của process
+* USER: tên của người đang chạy process
+* PR: Mức độ ưu tiên của quá trình
+* NI: Giá trị tốt cảu process
+* VIRT: Tổng số lượng bộ nhớ ảo đã dùng của process
+* RES: Tổng số lượng bộ nhớ vật lý mà process đang dùng
+* SHR: Số lượng bộ nhớ mà process này đang chia sẻ với process khác
+* S: Trạng thái của process(D: interuptible sleep,I=idle,R=Running,S=Sleeping,T=TRaced of stopped and Z = zombie)
 ### Employing	Multiple	Screens 
+Công cụ `screen` tạo thêm của số làm việc
+#### Multiplexing with `tmux`
+`tmux` tương tự như `screen` tuy nhiên nó được cải tiến với một số chức năng hữu ích khác.Cả 2 công cụ không được cài đặt sẵn trong hệ thống.
 ### Understanding	Foreground	and Background	Processes 
-### Managing	Process	Priorities 
-### Sending	Signals	to	Processes
+#### Sending  a Job to the Background
+
+### Stopping a Job
+Lệnh  `kill` cho phép dừng 1 background job
+```
+$ jobs -l
+[1]- 1539 Running sleep 3000 &
+[2]+ 1540 Running bash CriticalBackups.sh &
+$
+$ kill %1
+[1]- Terminated sleep 3000
+```
